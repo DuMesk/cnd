@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Formulário para Planilha</title>
+</head>
+<body>
+
+<h1>Formulário de Contato</h1>
+
+<form id="formulario">
+    <input type="text" name="nome" placeholder="Seu nome" required><br><br>
+    <input type="email" name="email" placeholder="Seu email" required><br><br>
+    <textarea name="mensagem" placeholder="Sua mensagem" required></textarea><br><br>
+    <button type="submit">Enviar</button>
+</form>
+
+<script>
+const formulario = document.getElementById('formulario');
+
+formulario.addEventListener('submit', function(e) {
+    e.preventDefault(); // Impede o envio tradicional
+
+    const dados = {
+        nome: formulario.nome.value,
+        email: formulario.email.value,
+        mensagem: formulario.mensagem.value
+    };
+
+    fetch('https://script.google.com/macros/s/AKfycbx0rdP4dyIaX4KshgMwV_79BbUXZlg7sdNOQdPTHtmQZk6a6wGfjfDnFMq_tUMRyKT46w/exec', {
+        method: 'POST',
+        body: JSON.stringify(dados),
+        headers: {
+            'Content-Type': 'application/json'
+        },
+      
+    })
+    .then(response => response.text())
+    .then(mensagem => {
+        alert('Formulário enviado com sucesso!');
+        formulario.reset(); // Limpa o formulário
+    })
+    .catch(error => {
+        alert('Erro ao enviar formulário.');
+        console.error(error);
+    });
+});
+</script>
+
+</body>
+</html>
