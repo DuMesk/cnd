@@ -14,6 +14,8 @@
     <textarea name="mensagem" placeholder="Sua mensagem" required></textarea><br><br>
     <button type="submit">Enviar</button>
 </form>
+<h2>Mensagens recebidas:</h2>
+<div id="dados"></div>
 
 <script>
 const formulario = document.getElementById('formulario');
@@ -45,6 +47,17 @@ formulario.addEventListener('submit', function(e) {
         console.error(error);
     });
 });
+    fetch('https://script.google.com/macros/s/AKfycbx0rdP4dyIaX4KshgMwV_79BbUXZlg7sdNOQdPTHtmQZk6a6wGfjfDnFMq_tUMRyKT46w/exec')
+  .then(response => response.json())
+  .then(dados => {
+      const divDados = document.getElementById('dados');
+      dados.forEach(item => {
+          divDados.innerHTML += `<p><strong>${item.nome}</strong> (${item.email}): ${item.mensagem}</p>`;
+      });
+  })
+  .catch(error => {
+      console.error('Erro ao buscar dados:', error);
+  });
 </script>
 
 </body>
