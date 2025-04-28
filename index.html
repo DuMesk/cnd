@@ -32,7 +32,8 @@ formulario.addEventListener('submit', function(e) {
         body: JSON.stringify(dados),
         headers: {
             'Content-Type': 'application/json'
-        }      
+        },
+        mode: 'no-cors'      
     })
     .then(response => response.text())
     .then(mensagem => {
