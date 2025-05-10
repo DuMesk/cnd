@@ -1,6 +1,6 @@
 
 const senhaCorreta = "admin123";
-const urlPlanilha = "https://script.google.com/macros/s/AKfycbw5RW-lmA3abuh9z-ti0jL219fcQv8kd2GQgJJdL4BAKMN81jLByQ0YoLJDtPq4DvJ0_g/exec";
+const urlPlanilha = "https://script.google.com/macros/s/AKfycbxZMSj_JPcpS_HJrKyiLta7yE8aLCaffqcljA42J1Kp9gIZ5JHpu_HOOwBRLQIzfW4rhg/exec";
                     
 
 function verificarSenha() {
