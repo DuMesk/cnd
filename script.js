@@ -53,6 +53,7 @@ function carregarAgendamentos() {
 function alterarStatus(index, novoStatus) {
     fetch(urlPlanilha, {
         method: 'POST',
+        mode: no-cors,
         headers: {
             'Content-Type': 'application/json'
         },
