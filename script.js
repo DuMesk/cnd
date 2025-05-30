@@ -1,7 +1,6 @@
 
 const senhaCorreta = "admin123";
 const urlPlanilha = "https://script.google.com/macros/s/AKfycbxZMSj_JPcpS_HJrKyiLta7yE8aLCaffqcljA42J1Kp9gIZ5JHpu_HOOwBRLQIzfW4rhg/exec";
-                    
 
 function verificarSenha() {
     const senha = document.getElementById("senha").value;
@@ -16,31 +15,40 @@ function verificarSenha() {
 }
 
 function carregarAgendamentos() {
-    fetch(urlPlanilha)
-        .then(res => res.json())
-        .then(dados => {
-            const corpo = document.querySelector("#tabela tbody");
-            corpo.innerHTML = "";
-            dados.forEach((item, index) => {
-                const tr = document.createElement("tr");
-                tr.innerHTML = `
-                    <tr>
-                    <td data-label="Nome">${item.nome}</td>
-                    <td data-label="Data">${formatarDataBR(item.dataEscolhida)}</td>
-                    <td data-label="Hora">${item.horarioEscolhido}</td>
-                    <td data-label="Serviço">${item.servico || '-'}</td>
-                    <td data-label="Status">${item.status || 'Pendente'}</td>
-                    <td data-label="Ações">
-                        <button onclick="alterarStatus(${index}, 'Confirmado')">Confirmar</button>
-                        <button onclick="alterarStatus(${index}, 'Cancelado')">Cancelar</button>
-                    </td>
-                    </tr>
+    const url = `${urlPlanilha}?acao=listarTodos&callback=callback`;
 
-                `;
-                corpo.appendChild(tr);
-            });
+    const script = document.createElement("script");
+    script.src = url;
+    document.body.appendChild(script);
+
+    window.callback = function(response) {
+        if (response.status !== "sucesso") {
+            console.error("Erro ao carregar dados:", response);
+            return;
+        }
+
+        const dados = response.registros;
+        const corpo = document.querySelector("#tabela tbody");
+        corpo.innerHTML = "";
+
+        dados.forEach((item, index) => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td data-label="Nome">${item.nome}</td>
+                <td data-label="Data">${formatarDataBR(item.data)}</td>
+                <td data-label="Hora">${item.hora}</td>
+                <td data-label="Serviço">${item.serviço || '-'}</td>
+                <td data-label="Status">${item.status || 'Pendente'}</td>
+                <td data-label="Ações">
+                    <button onclick="alterarStatus(${index + 2}, 'Confirmado')">Confirmar</button>
+                    <button onclick="alterarStatus(${index + 2}, 'Cancelado')">Cancelar</button>
+                </td>
+            `;
+            corpo.appendChild(tr);
         });
+    };
 }
+
 
 function alterarStatus(index, novoStatus) {
     fetch(urlPlanilha, {
@@ -50,7 +58,7 @@ function alterarStatus(index, novoStatus) {
         },
         body: JSON.stringify({
             acao: 'alterarStatus',
-            linha: index + 2, // linha na planilha
+            linha: index, // linha na planilha
             status: novoStatus
         })
     })
