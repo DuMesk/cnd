@@ -51,41 +51,32 @@ function carregarAgendamentos() {
 
 
 function alterarStatus(index, novoStatus) {
-    fetch(urlPlanilha, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            acao: 'alterarStatus',
-            linha: index, // linha na planilha
-            status: novoStatus
-        })
-    })
-    .then(res => res.json()) // Aqui esperamos uma resposta JSON
-    .then(response => {
-        if (response.resultado === 'sucesso') {
+    const url = `${urlPlanilha}?acao=alterarStatus&linha=${index}&status=${novoStatus}&callback=callbackStatus`;
+
+    const script = document.createElement("script");
+    script.src = url;
+    document.body.appendChild(script);
+
+    window.callbackStatus = function(response) {
+        if (response.status === "sucesso") {
             Swal.fire({
                 title: 'Status atualizado!',
                 text: `Agendamento marcado como "${novoStatus}".`,
                 icon: 'success',
                 confirmButtonColor: '#D4AFB9'
             });
-            carregarAgendamentos(); // Atualiza a tabela do painel
+            carregarAgendamentos();
         } else {
-            throw new Error(response.mensagem || 'Erro ao atualizar status.');
+            Swal.fire({
+                title: 'Erro!',
+                text: response.mensagem || 'Não foi possível atualizar o status.',
+                icon: 'error',
+                confirmButtonColor: '#D4AFB9'
+            });
         }
-    })
-    .catch(error => {
-        Swal.fire({
-            title: 'Erro!',
-            text: 'Não foi possível atualizar o status.',
-            icon: 'error',
-            confirmButtonColor: '#D4AFB9'
-        });
-        console.error(error);
-    });
+    };
 }
+
 
 
 
