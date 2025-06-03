@@ -80,10 +80,30 @@ function alterarStatus(index, novoStatus) {
 
 
 
-function formatarDataBR(dataISO) {
-    const data = new Date(dataISO);
-    if (!isNaN(data.getTime())) {
-        return data.toLocaleDateString('pt-BR');
+function formatarDataBR(data) {
+    if (!data) return "";
+
+    // Se já vier no formato DD/MM/YYYY
+    if (data.includes("/")) {
+        return data;
     }
-    return dataISO;
+
+    // Se vier no formato YYYY-MM-DD
+    if (data.includes("-")) {
+        const [ano, mes, dia] = data.split("-");
+        return `${dia.padStart(2, '0')}/${mes.padStart(2, '0')}/${ano}`;
+    }
+
+    // Se vier como objeto Date (ex.: Wed Jun 04 2025 ...)
+    const dataObj = new Date(data);
+    if (!isNaN(dataObj.getTime())) {
+        const dia = String(dataObj.getDate()).padStart(2, '0');
+        const mes = String(dataObj.getMonth() + 1).padStart(2, '0');
+        const ano = dataObj.getFullYear();
+        return `${dia}/${mes}/${ano}`;
+    }
+
+    // Se não reconhece, retorna como veio
+    return data;
 }
+
